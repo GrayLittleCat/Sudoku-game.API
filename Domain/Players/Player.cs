@@ -5,8 +5,7 @@ namespace Domain.Players;
 
 public sealed class Player : Entity
 {
-    public Player(int id, Email email, Name nickname, string identityId)
-    :base (default)
+    public Player(Email email, Name nickname, string identityId)
     {
         Email = email;
         Nickname = nickname;

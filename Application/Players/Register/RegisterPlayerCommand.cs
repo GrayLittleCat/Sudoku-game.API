@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Windows.Input;
+using Domain.Players;
+using MediatR;
 
 namespace Application.Players.Register;
 
