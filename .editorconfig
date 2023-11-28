@@ -69,7 +69,6 @@ csharp_style_expression_bodied_accessors = true:error
 csharp_style_expression_bodied_lambdas = true:error
 csharp_style_expression_bodied_local_functions = true:error
 
-
 # CA1002: Do not expose generic lists
 dotnet_diagnostic.CA1002.severity = none
 
@@ -254,3 +253,5 @@ dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix =
 dotnet_naming_style.begins_with_i.word_separator =
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+dotnet_diagnostic.CA1724.severity = none

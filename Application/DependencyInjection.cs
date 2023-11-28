@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -8,12 +7,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        var assembly = typeof(DependencyInjection).Assembly;
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
+        });
 
-        services.AddMediatR(configuration =>
-            configuration.RegisterServicesFromAssembly(assembly));
-
-        services.AddValidatorsFromAssembly(assembly);
+        services.AddValidatorsFromAssembly(ApplicationAssemblyReference.Assembly);
 
         return services;
     }

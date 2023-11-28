@@ -7,16 +7,13 @@ namespace Application.Players.Register;
 
 internal sealed class RegisterPlayerCommandHandler : IRequestHandler<RegisterPlayerCommand>
 {
-    private readonly IAuthenticationService _authenticationService;
     private readonly IPlayerRepository _playerRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterPlayerCommandHandler(
-        IAuthenticationService authenticationService,
         IPlayerRepository playerRepository,
         IUnitOfWork unitOfWork)
     {
-        _authenticationService = authenticationService;
         _playerRepository = playerRepository;
         _unitOfWork = unitOfWork;
     }
@@ -26,14 +23,12 @@ internal sealed class RegisterPlayerCommandHandler : IRequestHandler<RegisterPla
         
 
         var playerEmail = Email.Create(request.Email);
-        if (!playerEmail.IsFailure)
+        if (playerEmail.IsFailure)
         {
             return;
         }
-        
-        var identityId = await _authenticationService.RegisterAsync(
-            request.Email,
-            request.Password);
+
+        var identityId = "1";
         
         var player = new Player(
             playerEmail.Value,
