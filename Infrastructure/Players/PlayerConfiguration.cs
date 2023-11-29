@@ -8,13 +8,15 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
 {
     public void Configure(EntityTypeBuilder<Player> builder)
     {
-        builder.HasKey(c => c.Id);
+        builder.HasKey(p => p.Id);
 
         builder.OwnsOne(player => player.Nickname, nickNameBuilder =>
         {
             nickNameBuilder.WithOwner();
 
             nickNameBuilder.Property(nickname => nickname.Value)
+                .HasColumnName(nameof(Player.Nickname).ToUpperInvariant())
+                .HasColumnType("VARCHAR2")
                 .HasMaxLength(100)
                 .IsRequired();
         });
@@ -24,12 +26,19 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
             emailBuilder.WithOwner();
 
             emailBuilder.Property(email => email.Value)
+                .HasColumnName(nameof(Player.Email).ToUpperInvariant())
+                .HasColumnType("VARCHAR2")
                 .HasMaxLength(255)
                 .IsRequired();
             
-            emailBuilder.HasIndex(c => c.Value).IsUnique();
+            emailBuilder.HasIndex(e => e.Value).IsUnique();
         });
+
+        builder.Property(p => p.IdentityId)
+            .HasColumnType("VARCHAR2")
+            .HasMaxLength(100)
+            .IsRequired();
         
-        builder.HasIndex(c => c.IdentityId).IsUnique();
+        builder.HasIndex(p => p.IdentityId).IsUnique();
     }
 }

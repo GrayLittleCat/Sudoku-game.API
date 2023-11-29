@@ -11,6 +11,10 @@ public sealed class Player : Entity
         Nickname = nickname;
         IdentityId = identityId;
     }
+    
+    private Player()
+    {
+    }
 
     public Email Email { get; private set; }
 

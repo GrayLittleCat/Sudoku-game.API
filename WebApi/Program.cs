@@ -1,8 +1,6 @@
-using System.Configuration;
 using Application;
 using Carter;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +11,7 @@ builder.Services.AddCarter();
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration)
-    ;
+    .AddInfrastructure(builder.Configuration);
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -28,6 +25,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapCarter();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseSerilogRequestLogging();
 
