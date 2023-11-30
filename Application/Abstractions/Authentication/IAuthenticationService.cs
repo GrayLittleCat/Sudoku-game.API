@@ -1,6 +1,8 @@
-﻿namespace Application.Abstractions.Authentication;
+﻿using SharedKernel;
+
+namespace Application.Abstractions.Authentication;
 
 public interface IAuthenticationService
 {
-    Task<string> RegisterAsync(string email, string password);
+    Task<Result<string>> RegisterAsync(string email, string password);
 }

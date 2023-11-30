@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Application.Abstractions.Authentication;
+using SharedKernel;
 
 namespace Infrastructure.Authentication;
 
@@ -13,7 +14,7 @@ internal sealed class JwtProvider : IJwtProvider
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetForCredentialsAsync(string email, string password)
+    public async Task<Result<string>> GetForCredentialsAsync(string email, string password)
     {
         var request = new
         {
@@ -23,6 +24,12 @@ internal sealed class JwtProvider : IJwtProvider
         };
 
         var response = await _httpClient.PostAsJsonAsync("", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return Result.Failure<string>(new Error("Authentication.InvalidCredentials", "Invalid credentials"));
+        }
+
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
 
         return authToken.IdToken;

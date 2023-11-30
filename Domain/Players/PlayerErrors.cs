@@ -2,11 +2,17 @@ using SharedKernel;
 
 namespace Domain.Players;
 
-public static class PlayerErrors
+public sealed class PlayerErrors
 {
-    public static Error NotFound(int userId) => new(
-        "Users.NotFound", $"The user with the Id = '{userId}' was not found");
+    public static Error NotFound(int playerId)
+    {
+        return new Error(
+            "Players.NotFound", $"The player with the Id = '{playerId}' was not found");
+    }
 
-    public static Error NotFoundByEmail(string email) => new(
-        "Users.NotFoundByEmail", $"The user with the Email = '{email}' was not found");
+    public static Error NotFoundByEmail(string email)
+    {
+        return new Error(
+            "Players.NotFoundByEmail", $"The player with the Email = '{email}' was not found");
+    }
 }

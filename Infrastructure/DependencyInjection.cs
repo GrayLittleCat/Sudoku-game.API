@@ -42,6 +42,7 @@ public static class DependencyInjection
         {
             httpClient.BaseAddress = new Uri(configuration["Authentication:TokenUri"]);
         });
+        services.AddAuthorization();
         services
             .AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>

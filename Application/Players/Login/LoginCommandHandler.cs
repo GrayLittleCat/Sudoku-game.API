@@ -1,9 +1,10 @@
 ﻿using Application.Abstractions.Authentication;
-using MediatR;
+using Application.Abstractions.Messaging;
+using SharedKernel;
 
 namespace Application.Players.Login;
 
-internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, string>
+internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, string>
 {
     private readonly IJwtProvider _jwtProvider;
 
@@ -12,7 +13,7 @@ internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, string
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         return await _jwtProvider.GetForCredentialsAsync(request.Email, request.Password);
     }

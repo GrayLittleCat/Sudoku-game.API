@@ -2,9 +2,9 @@
 using Application.Players.Login;
 using Application.Players.Register;
 using Carter;
+using Domain.Players;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Serilog;
 
 namespace WebApi.Endpoints;
 
@@ -12,12 +12,13 @@ public sealed class Player : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/players");
-        group.MapPost("", RegisterPlayerCommand);
+        app.MapPost("register", RegisterPlayerCommand);
 
         app.MapPost("login", LoginCommand);
 
-        group.MapGet("{id}", GetPlayerById).WithName(nameof(GetPlayerById));
+        var group = app.MapGroup("api/player");
+
+        group.MapGet("{playerId}", GetPlayerById).WithName(nameof(GetPlayerById)).RequireAuthorization();
     }
 
     private static async Task<IResult> RegisterPlayerCommand(
@@ -29,7 +30,12 @@ public sealed class Player : ICarterModule
             request.Password,
             request.Name);
 
-        await sender.Send(command);
+        var response = await sender.Send(command);
+
+        if (response.IsFailure)
+        {
+            return TypedResults.BadRequest(response.Error.Description);
+        }
 
         return TypedResults.Ok();
     }
@@ -38,13 +44,31 @@ public sealed class Player : ICarterModule
         LoginCommand command,
         ISender sender)
     {
-        return Results.Ok(await sender.Send(command));
+        var response = await sender.Send(command);
+
+        if (response.IsFailure)
+        {
+            return TypedResults.BadRequest(response.Error.Description);
+        }
+
+        return Results.Ok();
     }
 
-    private static async Task<IResult> GetPlayerById(int playerId, ISender sender)
+    private static async Task<Results<Ok<PlayerResponse>, NotFound<string>, BadRequest<string>>> GetPlayerById(
+        int playerId, ISender sender)
     {
         var playerResponse = await sender.Send(new GetPlayerByIdQuery(playerId));
 
-        return Results.Ok(playerResponse);
+        if (playerResponse.IsFailure)
+        {
+            if (playerResponse.Error == PlayerErrors.NotFound(playerId))
+            {
+                return TypedResults.NotFound(playerResponse.Error.Description);
+            }
+
+            return TypedResults.BadRequest(playerResponse.Error.Description);
+        }
+
+        return TypedResults.Ok(playerResponse.Value);
     }
 }

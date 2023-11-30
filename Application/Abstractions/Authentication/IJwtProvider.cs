@@ -1,6 +1,8 @@
-﻿namespace Application.Abstractions.Authentication;
+﻿using SharedKernel;
+
+namespace Application.Abstractions.Authentication;
 
 public interface IJwtProvider
 {
-    Task<string> GetForCredentialsAsync(string email, string password);
+    Task<Result<string>> GetForCredentialsAsync(string email, string password);
 }
