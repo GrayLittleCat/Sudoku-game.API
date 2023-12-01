@@ -1,12 +1,12 @@
-﻿using Domain.Levels;
-
-namespace Domain.PlayerScores;
+﻿namespace Domain.PlayerScores;
 
 public interface IPlayerScoreRepository
 {
-    Task<Level?> GetByIdAsync(int id);
+    Task<PlayerScore?> GetByIdAsync(int id);
 
-    void Add(PlayerScore playerScore);
+    void Insert(PlayerScore playerScore);
 
     void Update(PlayerScore playerScore);
+
+    void Delete(PlayerScore playerScore);
 }

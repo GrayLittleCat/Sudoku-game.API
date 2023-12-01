@@ -9,9 +9,14 @@ public sealed class Level
         Description = description;
     }
 
+    //Needed for EF Core
+    public Level()
+    {
+    }
+
     public int Id { get; private set; }
-    
+
     public string Name { get; private set; }
-    
+
     public string Description { get; private set; }
 }

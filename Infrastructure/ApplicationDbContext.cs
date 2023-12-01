@@ -1,5 +1,7 @@
 ﻿using Application.Abstractions.Data;
+using Domain.Levels;
 using Domain.Players;
+using Domain.PlayerScores;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
@@ -16,10 +18,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
         _publisher = publisher;
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    }
+    public DbSet<Player> Players { get; set; }
+    public DbSet<PlayerScore> PlayerScores { get; set; }
+    public DbSet<Level> Level { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
@@ -37,7 +38,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
             .ToList();
 
         var result = await base.SaveChangesAsync(cancellationToken);
-        
+
         foreach (var domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent, cancellationToken);
@@ -46,5 +47,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
         return result;
     }
 
-    public DbSet<Player> Players { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
 }

@@ -12,6 +12,7 @@ public sealed class Player : Entity
         IdentityId = identityId;
     }
     
+    //Needed for EF Core
     private Player()
     {
     }

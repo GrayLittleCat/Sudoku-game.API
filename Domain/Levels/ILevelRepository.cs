@@ -4,9 +4,9 @@ public interface ILevelRepository
 {
     Task<Level?> GetByIdAsync(int id);
 
-    void Add(Level level);
+    void Insert(Level level);
 
     void Update(Level level);
 
-    void Remove(Level level);
+    void Delete(Level level);
 }

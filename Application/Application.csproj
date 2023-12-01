@@ -1,19 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
-    <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1"/>
+        <PackageReference Include="MediatR" Version="12.2.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="PlayerScores\Delete\"/>
+        <Folder Include="PlayerScores\GetById\"/>
+        <Folder Include="PlayerScores\GetByPlayerId\"/>
+        <Folder Include="PlayerScores\Get\"/>
+    </ItemGroup>
 
 </Project>
