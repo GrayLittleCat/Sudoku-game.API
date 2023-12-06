@@ -17,6 +17,7 @@ public sealed class PlayerScore : Entity
     }
 
     public int PlayerId { get; private set; }
+    
     public int LevelId { get; private set; }
     public float Score { get; private set; }
 

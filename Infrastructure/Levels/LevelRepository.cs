@@ -14,21 +14,21 @@ internal sealed class LevelRepository : ILevelRepository
 
     public Task<Level?> GetByIdAsync(int id)
     {
-        return _context.Level.SingleOrDefaultAsync(l => l.Id == id);
+        return _context.Levels.SingleOrDefaultAsync(l => l.Id == id);
     }
 
     public void Insert(Level level)
     {
-        _context.Level.Add(level);
+        _context.Levels.Add(level);
     }
 
     public void Update(Level level)
     {
-        _context.Level.Update(level);
+        _context.Levels.Update(level);
     }
 
     public void Delete(Level level)
     {
-        _context.Level.Remove(level);
+        _context.Levels.Remove(level);
     }
 }

@@ -2,7 +2,7 @@ using SharedKernel;
 
 namespace Domain.Players;
 
-public sealed class PlayerErrors
+public static class PlayerErrors
 {
     public static Error NotFound(int playerId)
     {

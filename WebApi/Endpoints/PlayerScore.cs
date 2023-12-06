@@ -10,10 +10,10 @@ public sealed class PlayerScore : ICarterModule
     {
         var group = app.MapGroup("api/player-score");
 
-        group.MapPost("", CreatePlayerScoreCommand).RequireAuthorization();
+        group.MapPost("", CreatePlayerScore).RequireAuthorization();
     }
 
-    private static async Task<IResult> CreatePlayerScoreCommand(
+    private static async Task<IResult> CreatePlayerScore(
         CreatePlayerScoreRequest request,
         ISender sender)
     {

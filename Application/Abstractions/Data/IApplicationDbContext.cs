@@ -11,5 +11,5 @@ public interface IApplicationDbContext
 
     DbSet<PlayerScore> PlayerScores { get; set; }
 
-    DbSet<Level> Level { get; set; }
+    DbSet<Level> Levels { get; set; }
 }

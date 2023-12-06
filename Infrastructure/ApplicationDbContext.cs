@@ -20,7 +20,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
 
     public DbSet<Player> Players { get; set; }
     public DbSet<PlayerScore> PlayerScores { get; set; }
-    public DbSet<Level> Level { get; set; }
+    public DbSet<Level> Levels { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
