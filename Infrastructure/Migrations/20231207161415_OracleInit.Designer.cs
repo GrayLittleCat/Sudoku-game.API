@@ -11,7 +11,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231207153411_OracleInit")]
+    [Migration("20231207161415_OracleInit")]
     partial class OracleInit
     {
         /// <inheritdoc />
@@ -27,11 +27,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Levels.Level", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("NUMBER(10)")
                         .HasColumnName("ID");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -52,6 +49,23 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("IX_LEVELS_NAME");
 
                     b.ToTable("LEVELS", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Easy"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Medium"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Hard"
+                        });
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>

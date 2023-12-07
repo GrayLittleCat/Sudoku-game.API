@@ -2,6 +2,8 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -14,8 +16,7 @@ namespace Infrastructure.Migrations
                 name: "LEVELS",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     NAME = table.Column<string>(type: "VARCHAR2(100)", maxLength: 100, nullable: false),
                     DESCRIPTION = table.Column<string>(type: "VARCHAR2(255)", maxLength: 255, nullable: true)
                 },
@@ -64,6 +65,16 @@ namespace Infrastructure.Migrations
                         principalTable: "PLAYERS",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "LEVELS",
+                columns: new[] { "ID", "DESCRIPTION", "NAME" },
+                values: new object[,]
+                {
+                    { 1, null, "Easy" },
+                    { 2, null, "Medium" },
+                    { 3, null, "Hard" }
                 });
 
             migrationBuilder.CreateIndex(

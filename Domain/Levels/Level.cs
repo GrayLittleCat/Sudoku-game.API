@@ -1,8 +1,10 @@
-﻿namespace Domain.Levels;
+﻿using SharedKernel;
 
-public sealed class Level
+namespace Domain.Levels;
+
+public sealed class Level : Entity
 {
-    public Level(int id, string levelName, string description)
+    public Level(int id, string levelName, string? description = null)
     {
         Id = id;
         Name = levelName;
@@ -14,9 +16,7 @@ public sealed class Level
     {
     }
 
-    public int Id { get; private set; }
-
     public string Name { get; private set; }
 
-    public string Description { get; private set; }
+    public string? Description { get; private set; }
 }
