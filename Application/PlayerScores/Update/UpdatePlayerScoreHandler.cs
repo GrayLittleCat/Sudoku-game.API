@@ -22,7 +22,7 @@ internal sealed class UpdatePlayerScoreHandler : ICommandHandler<UpdatePlayerSco
 
         if (playerScore is null)
         {
-            return Result.Failure(new Error("PlayerScore.NotFound", $"Player with id:[{request.Id}] not found"));
+            return Result.Failure(PlayerScoreErrors.NotFound(request.Id));
         }
 
         playerScore.Update(request.Score);

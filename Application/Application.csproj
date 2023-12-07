@@ -18,7 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="PlayerScores\Delete\"/>
         <Folder Include="PlayerScores\Get\"/>
     </ItemGroup>
 

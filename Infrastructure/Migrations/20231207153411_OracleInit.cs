@@ -11,7 +11,7 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LEVEL",
+                name: "LEVELS",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
@@ -21,7 +21,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LEVEL", x => x.ID);
+                    table.PrimaryKey("PK_LEVELS", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,9 +53,9 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_PLAYER_SCORES", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_PLAYER_SCORES_LEVEL_LEVEL_ID",
+                        name: "FK_PLAYER_SCORES_LEVELS_LEVEL_ID",
                         column: x => x.LEVEL_ID,
-                        principalTable: "LEVEL",
+                        principalTable: "LEVELS",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -67,8 +67,8 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LEVEL_NAME",
-                table: "LEVEL",
+                name: "IX_LEVELS_NAME",
+                table: "LEVELS",
                 column: "NAME",
                 unique: true);
 
@@ -92,7 +92,8 @@ namespace Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PLAYER_SCORES_PLAYER_ID_LEVEL_ID",
                 table: "PLAYER_SCORES",
-                columns: new[] { "PLAYER_ID", "LEVEL_ID" });
+                columns: new[] { "PLAYER_ID", "LEVEL_ID" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -102,7 +103,7 @@ namespace Infrastructure.Migrations
                 name: "PLAYER_SCORES");
 
             migrationBuilder.DropTable(
-                name: "LEVEL");
+                name: "LEVELS");
 
             migrationBuilder.DropTable(
                 name: "PLAYERS");

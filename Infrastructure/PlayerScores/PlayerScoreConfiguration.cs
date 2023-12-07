@@ -26,6 +26,6 @@ internal sealed class PlayerScoreConfiguration : IEntityTypeConfiguration<Player
             .HasColumnType("NUMBER")
             .IsRequired();
 
-        builder.HasIndex(ps => new { ps.PlayerId, ps.LevelId });
+        builder.HasIndex(ps => new { ps.PlayerId, ps.LevelId }).IsUnique();
     }
 }

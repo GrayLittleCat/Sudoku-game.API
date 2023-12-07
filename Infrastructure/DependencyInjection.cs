@@ -35,6 +35,9 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(sp =>
             sp.GetRequiredService<ApplicationDbContext>());
 
+        services.AddScoped<IDbConnectionFactory>(sp =>
+            sp.GetRequiredService<DbConnectionFactory>());
+
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IPlayerScoreRepository, PlayerScoreRepository>();
         services.AddScoped<ILevelRepository, LevelRepository>();

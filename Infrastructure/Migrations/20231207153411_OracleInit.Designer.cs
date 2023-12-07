@@ -11,7 +11,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231201171610_OracleInit")]
+    [Migration("20231207153411_OracleInit")]
     partial class OracleInit
     {
         /// <inheritdoc />
@@ -45,13 +45,13 @@ namespace Infrastructure.Migrations
                         .HasColumnName("NAME");
 
                     b.HasKey("Id")
-                        .HasName("PK_LEVEL");
+                        .HasName("PK_LEVELS");
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_LEVEL_NAME");
+                        .HasDatabaseName("IX_LEVELS_NAME");
 
-                    b.ToTable("LEVEL", (string)null);
+                    b.ToTable("LEVELS", (string)null);
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>
@@ -82,6 +82,7 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("IX_PLAYER_SCORES_LEVEL_ID");
 
                     b.HasIndex("PlayerId", "LevelId")
+                        .IsUnique()
                         .HasDatabaseName("IX_PLAYER_SCORES_PLAYER_ID_LEVEL_ID");
 
                     b.ToTable("PLAYER_SCORES", (string)null);
@@ -119,7 +120,7 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("LevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_PLAYER_SCORES_LEVEL_LEVEL_ID");
+                        .HasConstraintName("FK_PLAYER_SCORES_LEVELS_LEVEL_ID");
 
                     b.HasOne("Domain.Players.Player", null)
                         .WithMany()
