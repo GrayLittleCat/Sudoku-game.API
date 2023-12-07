@@ -21,19 +21,21 @@ internal sealed record GetPlayerScoreByIdQueryHandler : IQueryHandler<GetPlayerS
         using var connection = _dbConnectionFactory.CreateOpenConnection();
 
         const string sql =
-            """
-            SELECT ps.id,ps.player_id,p.nickname,ps.level_id,l.name
+            @"
+            SELECT ps.id,ps.score,ps.player_id,p.nickname,ps.level_id,l.name
             FROM player_scores ps
             JOIN players p
               ON p.id = ps.player_id
             JOIN levels l
               ON l.id = ps.level_id
-            WHERE ps.ID = @PlayerScoreId
-            """;
+            WHERE ps.ID = :PlayerScoreId
+            ";
 
-        PlayerScoreResponse? playerScore = await connection.QueryFirstOrDefaultAsync(
+        var param = new { request.PlayerScoreId };
+
+        var playerScore = await connection.QueryFirstOrDefaultAsync<PlayerScoreResponse>(
             sql,
-            new { request.PlayerScoreId });
+            param);
         if (playerScore is null)
         {
             return Result.Failure<PlayerScoreResponse>(PlayerScoreErrors.NotFound(request.PlayerScoreId));

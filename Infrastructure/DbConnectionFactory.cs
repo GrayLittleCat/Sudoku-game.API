@@ -6,9 +6,9 @@ namespace Infrastructure;
 
 public class DbConnectionFactory : IDbConnectionFactory
 {
-    private readonly DbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public DbConnectionFactory(DbContext context)
+    public DbConnectionFactory(ApplicationDbContext context)
     {
         _context = context;
     }

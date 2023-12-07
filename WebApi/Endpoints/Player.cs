@@ -51,7 +51,7 @@ public sealed class Player : ICarterModule
             return TypedResults.BadRequest(response.Error.Description);
         }
 
-        return Results.Ok();
+        return Results.Ok(response.Value);
     }
 
     private static async Task<Results<Ok<PlayerResponse>, NotFound<string>, BadRequest<string>>> GetPlayerById(
