@@ -1,7 +1,8 @@
 ﻿using Application.Abstractions.Messaging;
 
-namespace Application.PlayerScores.Get;
+namespace Application.PlayerScores.GetByLevelId;
 
-public sealed record GetPlayerScoresQuery(
+public sealed record GetPlayerScoresByLevelIdQuery(
+    int LevelId,
     int Page,
     int PageSize) : IQuery<PagedList<PlayerScoreResponse>>;

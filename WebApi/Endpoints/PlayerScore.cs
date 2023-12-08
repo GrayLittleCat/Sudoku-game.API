@@ -2,6 +2,7 @@
 using Application.PlayerScores.Delete;
 using Application.PlayerScores.Get;
 using Application.PlayerScores.GetById;
+using Application.PlayerScores.GetByLevelId;
 using Application.PlayerScores.GetByPlayerId;
 using Application.PlayerScores.Update;
 using Carter;
@@ -19,6 +20,7 @@ public sealed class PlayerScore : ICarterModule
         group.MapGet("", GetPlayerScores).WithName(nameof(GetPlayerScores));
         group.MapGet("{id}", GetPlayerScoreById).WithName(nameof(GetPlayerScoreById));
         group.MapGet("player/{playerId}", GetPlayerScoreByPlayerId).WithName(nameof(GetPlayerScoreByPlayerId));
+        group.MapGet("level/{levelId}", GetPlayerScoreByLevelId).WithName(nameof(GetPlayerScoreByLevelId));
 
         group.MapPost("", CreatePlayerScore);
 
@@ -101,9 +103,26 @@ public sealed class PlayerScore : ICarterModule
         return TypedResults.Ok(response.Value);
     }
 
-    private static async Task<IResult> GetPlayerScores(ISender sender)
+    private static async Task<IResult> GetPlayerScoreByLevelId(int levelId, int page, int pageSize, ISender sender)
     {
-        var query = new GetPlayerScoresQuery();
+        var query = new GetPlayerScoresByLevelIdQuery(levelId, page, pageSize);
+
+        var response = await sender.Send(query);
+
+        if (response.IsFailure)
+        {
+            return TypedResults.NotFound(response.Error.Description);
+        }
+
+        return TypedResults.Ok(response.Value);
+    }
+
+    private static async Task<IResult> GetPlayerScores(
+        int page,
+        int pageSize,
+        ISender sender)
+    {
+        var query = new GetPlayerScoresQuery(page, pageSize);
 
         var response = await sender.Send(query);
 

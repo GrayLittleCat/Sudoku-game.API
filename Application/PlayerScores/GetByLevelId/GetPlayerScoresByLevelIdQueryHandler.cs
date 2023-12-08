@@ -1,20 +1,22 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Dapper;
 using Domain.PlayerScores;
 using SharedKernel;
 
-namespace Application.PlayerScores.Get;
+namespace Application.PlayerScores.GetByLevelId;
 
-internal sealed record GetPlayerScoresQueryHandler : IQueryHandler<GetPlayerScoresQuery, PagedList<PlayerScoreResponse>>
+internal sealed record GetPlayerScoresByLevelIdQueryHandler
+    : IQueryHandler<GetPlayerScoresByLevelIdQuery, PagedList<PlayerScoreResponse>>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public GetPlayerScoresQueryHandler(IDbConnectionFactory dbConnectionFactory)
+    public GetPlayerScoresByLevelIdQueryHandler(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<Result<PagedList<PlayerScoreResponse>>> Handle(GetPlayerScoresQuery request,
+    public async Task<Result<PagedList<PlayerScoreResponse>>> Handle(GetPlayerScoresByLevelIdQuery request,
         CancellationToken cancellationToken)
     {
         using var connection = _dbConnectionFactory.CreateOpenConnection();
@@ -32,14 +34,19 @@ internal sealed record GetPlayerScoresQueryHandler : IQueryHandler<GetPlayerScor
               ON p.id = ps.player_id
             JOIN levels l
               ON l.id = ps.level_id
+            WHERE ps.LEVEL_ID = :LevelId
             ";
 
+        var param = new DynamicParameters();
+
+        param.Add("LevelId", request.LevelId);
 
         var playerScoreList = await PagedList<PlayerScoreResponse>.CreateAsync(
             sql,
             request.Page,
             request.PageSize,
-            connection);
+            connection,
+            param);
 
 
         if (playerScoreList.TotalCount == 0)
