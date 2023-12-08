@@ -15,4 +15,10 @@ public static class PlayerScoreErrors
         return new Error(
             "PlayerScores.NotFoundByPlayerId", $"The player score with the Player Id = '{playerId}' was not found");
     }
+
+    public static Error EmptyList()
+    {
+        return new Error(
+            "PlayerScores.EmptyList", "There are no player scores in system yet");
+    }
 }

@@ -2,4 +2,4 @@
 
 namespace Application.PlayerScores.GetByPlayerId;
 
-public sealed record GetPlayerScoreByPlayerIdQuery(int PlayerId) : IQuery<PlayerScoreResponse>;
+public sealed record GetPlayerScoreByPlayerIdQuery(int PlayerId) : IQuery<List<PlayerScoreResponse>>;

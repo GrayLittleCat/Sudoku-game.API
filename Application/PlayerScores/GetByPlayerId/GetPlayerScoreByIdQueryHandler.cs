@@ -7,7 +7,7 @@ using SharedKernel;
 namespace Application.PlayerScores.GetByPlayerId;
 
 internal sealed record GetPlayerScoreByPlayerIdQueryHandler
-    : IQueryHandler<GetPlayerScoreByPlayerIdQuery, PlayerScoreResponse>
+    : IQueryHandler<GetPlayerScoreByPlayerIdQuery, List<PlayerScoreResponse>>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
@@ -16,31 +16,37 @@ internal sealed record GetPlayerScoreByPlayerIdQueryHandler
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<Result<PlayerScoreResponse>> Handle(GetPlayerScoreByPlayerIdQuery request,
+    public async Task<Result<List<PlayerScoreResponse>>> Handle(GetPlayerScoreByPlayerIdQuery request,
         CancellationToken cancellationToken)
     {
         using var connection = _dbConnectionFactory.CreateOpenConnection();
 
         const string sql =
             """
-            SELECT ps.id,ps.player_id,p.nickname,ps.level_id,l.name
+            SELECT ps.id,
+                   ps.score,
+                   ps.player_id AS PlayerId,
+                   p.nickname AS PlayerName,
+                   ps.level_id AS LevelId,
+                   l.name AS LevelName
             FROM player_scores ps
             JOIN players p
               ON p.id = ps.player_id
             JOIN levels l
               ON l.id = ps.level_id
-            WHERE ps.PLAYER_ID = @PlayerId
+            WHERE ps.PLAYER_ID = :PlayerId
             """;
 
-        PlayerScoreResponse? playerScore = await connection.QueryFirstOrDefaultAsync(
+        var playerScore = await connection.QueryAsync<PlayerScoreResponse>(
             sql,
             new { request.PlayerId });
 
-        if (playerScore is null)
+        var playerScoreResponses = playerScore.ToList();
+        if (playerScoreResponses.Count == 0)
         {
-            return Result.Failure<PlayerScoreResponse>(PlayerScoreErrors.NotFoundByPlayerId(request.PlayerId));
+            return Result.Failure<List<PlayerScoreResponse>>(PlayerScoreErrors.NotFoundByPlayerId(request.PlayerId));
         }
 
-        return playerScore;
+        return playerScoreResponses;
     }
 }

@@ -4,18 +4,18 @@ using Dapper;
 using Domain.PlayerScores;
 using SharedKernel;
 
-namespace Application.PlayerScores.GetById;
+namespace Application.PlayerScores.Get;
 
-internal sealed record GetPlayerScoreByIdQueryHandler : IQueryHandler<GetPlayerScoreByIdQuery, PlayerScoreResponse>
+internal sealed record GetPlayerScoresQueryHandler : IQueryHandler<GetPlayerScoresQuery, List<PlayerScoreResponse>>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public GetPlayerScoreByIdQueryHandler(IDbConnectionFactory dbConnectionFactory)
+    public GetPlayerScoresQueryHandler(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<Result<PlayerScoreResponse>> Handle(GetPlayerScoreByIdQuery request,
+    public async Task<Result<List<PlayerScoreResponse>>> Handle(GetPlayerScoresQuery request,
         CancellationToken cancellationToken)
     {
         using var connection = _dbConnectionFactory.CreateOpenConnection();
@@ -33,19 +33,18 @@ internal sealed record GetPlayerScoreByIdQueryHandler : IQueryHandler<GetPlayerS
               ON p.id = ps.player_id
             JOIN levels l
               ON l.id = ps.level_id
-            WHERE ps.ID = :PlayerScoreId
             ";
 
-        var param = new { request.PlayerScoreId };
 
-        var playerScore = await connection.QueryFirstOrDefaultAsync<PlayerScoreResponse>(
-            sql,
-            param);
-        if (playerScore is null)
+        var playerScores = await connection.QueryAsync<PlayerScoreResponse>(sql);
+        var playerScoreList = playerScores.ToList();
+
+
+        if (playerScoreList.Count == 0)
         {
-            return Result.Failure<PlayerScoreResponse>(PlayerScoreErrors.NotFound(request.PlayerScoreId));
+            return Result.Failure<List<PlayerScoreResponse>>(PlayerScoreErrors.EmptyList());
         }
 
-        return playerScore;
+        return playerScoreList;
     }
 }

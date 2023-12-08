@@ -1,5 +1,6 @@
 ﻿using Application.PlayerScores.Create;
 using Application.PlayerScores.Delete;
+using Application.PlayerScores.Get;
 using Application.PlayerScores.GetById;
 using Application.PlayerScores.GetByPlayerId;
 using Application.PlayerScores.Update;
@@ -12,9 +13,10 @@ public sealed class PlayerScore : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/player-score")
+        var group = app.MapGroup("api/player-scores")
             .RequireAuthorization();
 
+        group.MapGet("", GetPlayerScores).WithName(nameof(GetPlayerScores));
         group.MapGet("{id}", GetPlayerScoreById).WithName(nameof(GetPlayerScoreById));
         group.MapGet("player/{playerId}", GetPlayerScoreByPlayerId).WithName(nameof(GetPlayerScoreByPlayerId));
 
@@ -88,6 +90,20 @@ public sealed class PlayerScore : ICarterModule
     private static async Task<IResult> GetPlayerScoreByPlayerId(int playerId, ISender sender)
     {
         var query = new GetPlayerScoreByPlayerIdQuery(playerId);
+
+        var response = await sender.Send(query);
+
+        if (response.IsFailure)
+        {
+            return TypedResults.NotFound(response.Error.Description);
+        }
+
+        return TypedResults.Ok(response.Value);
+    }
+
+    private static async Task<IResult> GetPlayerScores(ISender sender)
+    {
+        var query = new GetPlayerScoresQuery();
 
         var response = await sender.Send(query);
 
