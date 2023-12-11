@@ -27,4 +27,9 @@ internal sealed class PlayerRepository : IPlayerRepository
     {
         _context.Players.Add(player);
     }
+
+    public void Delete(Player player)
+    {
+        _context.Players.Remove(player);
+    }
 }

@@ -1,4 +1,6 @@
-﻿using Application.Players.GetById;
+﻿using Application.Players.ChangePassword;
+using Application.Players.Delete;
+using Application.Players.GetById;
 using Application.Players.Login;
 using Application.Players.Register;
 using Carter;
@@ -16,9 +18,11 @@ public sealed class Player : ICarterModule
 
         app.MapPost("login", LoginCommand);
 
-        var group = app.MapGroup("api/player");
+        var group = app.MapGroup("api/player").RequireAuthorization();
 
-        group.MapGet("{playerId}", GetPlayerById).WithName(nameof(GetPlayerById)).RequireAuthorization();
+        group.MapGet("{playerId}", GetPlayerById).WithName(nameof(GetPlayerById));
+        group.MapPut("{playerId}/change-password", ChangePasswordCommand).WithName(nameof(ChangePasswordCommand));
+        group.MapDelete("{playerId}", DeleteCommand).WithName(nameof(DeleteCommand));
     }
 
     private static async Task<IResult> RegisterPlayerCommand(
@@ -52,6 +56,30 @@ public sealed class Player : ICarterModule
         }
 
         return Results.Ok(response.Value);
+    }
+
+    private static async Task<IResult> DeleteCommand(int playerId, ISender sender)
+    {
+        var command = new DeletePlayerCommand(playerId);
+        var response = await sender.Send(command);
+        if (response.IsFailure)
+        {
+            return TypedResults.BadRequest(response.Error.Description);
+        }
+
+        return TypedResults.Ok();
+    }
+
+    private static async Task<IResult> ChangePasswordCommand(int playerId, string newPassword, ISender sender)
+    {
+        var command = new ChangePasswordCommand(playerId, newPassword);
+        var response = await sender.Send(command);
+        if (response.IsFailure)
+        {
+            return TypedResults.BadRequest(response.Error.Description);
+        }
+
+        return TypedResults.Ok();
     }
 
     private static async Task<Results<Ok<PlayerResponse>, NotFound<string>, BadRequest<string>>> GetPlayerById(

@@ -7,4 +7,5 @@ public interface IPlayerRepository
     Task<bool> IsEmailUniqueAsync(string email);
 
     void Add(Player player);
+    void Delete(Player player);
 }

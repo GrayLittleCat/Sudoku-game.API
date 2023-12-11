@@ -20,7 +20,7 @@ internal sealed record GetPlayerScoresQueryHandler : IQueryHandler<GetPlayerScor
         using var connection = _dbConnectionFactory.CreateOpenConnection();
 
         const string sql =
-            @"
+            """
             SELECT ps.id,
                    ps.score,
                    ps.player_id AS PlayerId,
@@ -32,7 +32,8 @@ internal sealed record GetPlayerScoresQueryHandler : IQueryHandler<GetPlayerScor
               ON p.id = ps.player_id
             JOIN levels l
               ON l.id = ps.level_id
-            ";
+            ORDER BY ps.LEVEL_ID, ps.SCORE
+            """;
 
 
         var playerScoreList = await PagedList<PlayerScoreResponse>.CreateAsync(

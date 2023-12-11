@@ -22,7 +22,7 @@ internal sealed record GetPlayerScoresByLevelIdQueryHandler
         using var connection = _dbConnectionFactory.CreateOpenConnection();
 
         const string sql =
-            @"
+            """
             SELECT ps.id,
                    ps.score,
                    ps.player_id AS PlayerId,
@@ -35,7 +35,8 @@ internal sealed record GetPlayerScoresByLevelIdQueryHandler
             JOIN levels l
               ON l.id = ps.level_id
             WHERE ps.LEVEL_ID = :LevelId
-            ";
+            ORDER BY ps.SCORE
+            """;
 
         var param = new DynamicParameters();
 

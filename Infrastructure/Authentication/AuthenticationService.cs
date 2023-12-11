@@ -31,4 +31,64 @@ internal sealed class AuthenticationService : IAuthenticationService
                 e.Message));
         }
     }
+
+    public async Task<Result<string>> DeleteAsync(string uid)
+    {
+        try
+        {
+            await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
+            return Result.Success(uid);
+        }
+        catch (FirebaseAuthException e)
+        {
+            return Result.Failure<string>(new Error("Authentication.DeleteUserFailed", e.Message));
+        }
+        catch (ArgumentException e)
+        {
+            return Result.Failure<string>(new Error("Authentication.ArgumentException", e.Message));
+        }
+    }
+
+    public async Task<Result<string>> UpdateAsync(
+        string uid,
+        string? email = null,
+        string? password = null,
+        string? displayName = null)
+    {
+        var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+        var userArgs = new UserRecordArgs
+        {
+            Uid = uid,
+            Email = userRecord.Email,
+            DisplayName = userRecord.DisplayName
+        };
+        if (email != null)
+        {
+            userArgs.Email = email;
+        }
+
+        if (password != null)
+        {
+            userArgs.Password = password;
+        }
+
+        if (displayName != null)
+        {
+            userArgs.DisplayName = displayName;
+        }
+
+        try
+        {
+            await FirebaseAuth.DefaultInstance.UpdateUserAsync(userArgs);
+            return Result.Success(uid);
+        }
+        catch (FirebaseAuthException e)
+        {
+            return Result.Failure<string>(new Error("Authentication.UpdateUserFailed", e.Message));
+        }
+        catch (ArgumentException e)
+        {
+            return Result.Failure<string>(new Error("Authentication.ArgumentException", e.Message));
+        }
+    }
 }
