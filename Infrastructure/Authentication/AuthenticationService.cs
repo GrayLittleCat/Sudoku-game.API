@@ -36,6 +36,7 @@ internal sealed class AuthenticationService : IAuthenticationService
     {
         try
         {
+            await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(uid);
             await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
             return Result.Success(uid);
         }

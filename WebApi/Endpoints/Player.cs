@@ -70,9 +70,12 @@ public sealed class Player : ICarterModule
         return TypedResults.Ok();
     }
 
-    private static async Task<IResult> ChangePasswordCommand(int playerId, string newPassword, ISender sender)
+    private static async Task<IResult> ChangePasswordCommand(
+        int playerId,
+        ChangePasswordRequest request,
+        ISender sender)
     {
-        var command = new ChangePasswordCommand(playerId, newPassword);
+        var command = new ChangePasswordCommand(playerId, request.NewPassword);
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
