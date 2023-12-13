@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Authentication;
+﻿using System.Text;
+using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Domain.Levels;
 using Domain.Players;
@@ -13,17 +14,37 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure;
 
 public static class DependencyInjection
 {
     private const string OracleDbSecretName = "ConnectionStrings:OracleDB";
+    private const string AuthenticationTokenUriName = "Authentication:TokenUri";
+    private const string AuthenticationValidIssuerName = "Authentication:ValidIssuer";
+    private const string AuthenticationAudienceName = "Authentication:Audience";
+    private const string FirebaseJsonName = "FIREBASE_JSON";
 
     public static void AddInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration[OracleDbSecretName];
+        string? GetConfigValueBase64(string configName)
+        {
+            var configNameBase64 = configName + "_BASE64";
+            var configValueBase64 = configuration[configNameBase64];
+
+            return configValueBase64.IsNullOrEmpty()
+                ? configuration[configName]
+                : Encoding.UTF8.GetString(Convert.FromBase64String(configValueBase64!));
+        }
+
+        var connectionString = GetConfigValueBase64(OracleDbSecretName);
+        var firebaseJson = GetConfigValueBase64(FirebaseJsonName);
+        var authTokenUriString = GetConfigValueBase64(AuthenticationTokenUriName);
+        var authValidIssuer = GetConfigValueBase64(AuthenticationValidIssuerName);
+        var authAudience = GetConfigValueBase64(AuthenticationAudienceName);
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options
                 .UseUpperSnakeCaseNamingConvention()
@@ -43,22 +64,24 @@ public static class DependencyInjection
 
         FirebaseApp.Create(new AppOptions
         {
-            Credential = GoogleCredential.FromFile("firebase.json")
+            Credential = firebaseJson.IsNullOrEmpty()
+                ? GoogleCredential.FromFile("firebase.json")
+                : GoogleCredential.FromJson(firebaseJson)
         });
 
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddHttpClient<IJwtProvider, JwtProvider>(httpClient =>
         {
-            httpClient.BaseAddress = new Uri(configuration["Authentication:TokenUri"]);
+            httpClient.BaseAddress = new Uri(authTokenUriString!);
         });
         services.AddAuthorization();
         services
             .AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>
             {
-                jwtOptions.Authority = configuration["Authentication:ValidIssuer"];
-                jwtOptions.Audience = configuration["Authentication:Audience"];
-                jwtOptions.TokenValidationParameters.ValidIssuer = configuration["Authentication:ValidIssuer"];
+                jwtOptions.Authority = authValidIssuer;
+                jwtOptions.Audience = authAudience;
+                jwtOptions.TokenValidationParameters.ValidIssuer = authValidIssuer;
             });
     }
 }
