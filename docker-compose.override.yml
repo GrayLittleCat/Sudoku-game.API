@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   webapi:
-    image: ${DOCKER_REGISTRY-}sudoku-game
+    image: robocoool/sudoku-game
     env_file:
       - C:\Users\Coool\Projects\secrets\.env
     environment:

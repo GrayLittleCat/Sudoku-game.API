@@ -2,12 +2,12 @@ version: '3.4'
 
 services:
   webapi:
-    image: ${DOCKER_REGISTRY-}sudoku-game-arm64
+    image: robocoool/sudoku-game
     build:
       context: .
       platforms:
-        - "linux/arm64"
-        #- "linux/amd64"
+        #- "linux/arm64"
+        - "linux/amd64"
       dockerfile: WebApi/Dockerfile
       target: final
       
