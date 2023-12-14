@@ -33,6 +33,4 @@ app.UseAuthorization();
 
 app.UseSerilogRequestLogging();
 
-//app.UseHttpsRedirection();
-
 app.Run();

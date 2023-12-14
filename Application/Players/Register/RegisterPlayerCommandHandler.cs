@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Players.Register;
 
-internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPlayerCommand>
+internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPlayerCommand, int>
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IPlayerRepository _playerRepository;
@@ -22,12 +22,12 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
         _authenticationService = authenticationService;
     }
 
-    public async Task<Result> Handle(RegisterPlayerCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(RegisterPlayerCommand request, CancellationToken cancellationToken)
     {
         var playerEmail = Email.Create(request.Email);
         if (playerEmail.IsFailure)
         {
-            return Result.Failure(EmailErrors.InvalidFormat);
+            return Result.Failure<int>(EmailErrors.InvalidFormat);
         }
 
         var authResponse = await _authenticationService.RegisterAsync(
@@ -35,7 +35,7 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
 
         if (authResponse.IsFailure)
         {
-            return authResponse;
+            return Result.Failure<int>(authResponse.Error);
         }
 
         var player = new Player(
@@ -47,6 +47,6 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return player.Id;
     }
 }
