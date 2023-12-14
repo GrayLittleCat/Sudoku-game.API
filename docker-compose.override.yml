@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}sudoku-game
+    env_file:
+      - C:\Users\Coool\Projects\secrets\.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5091
+    ports:
+      - "5091:5091"

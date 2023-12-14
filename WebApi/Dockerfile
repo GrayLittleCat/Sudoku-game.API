@@ -3,13 +3,18 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5091
+EXPOSE 7047
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Build.props", "."]
 COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 RUN dotnet restore "./WebApi/./WebApi.csproj"
 COPY . .
 WORKDIR "/src/WebApi"

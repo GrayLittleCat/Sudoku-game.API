@@ -24,7 +24,7 @@ public static class DependencyInjection
     private const string AuthenticationTokenUriName = "Authentication:TokenUri";
     private const string AuthenticationValidIssuerName = "Authentication:ValidIssuer";
     private const string AuthenticationAudienceName = "Authentication:Audience";
-    private const string FirebaseJsonName = "FIREBASE_JSON";
+    private const string FirebaseJsonName = "Firebase_JSON";
 
     public static void AddInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
@@ -64,9 +64,7 @@ public static class DependencyInjection
 
         FirebaseApp.Create(new AppOptions
         {
-            Credential = firebaseJson.IsNullOrEmpty()
-                ? GoogleCredential.FromFile("firebase.json")
-                : GoogleCredential.FromJson(firebaseJson)
+            Credential = GoogleCredential.FromJson(firebaseJson)
         });
 
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
