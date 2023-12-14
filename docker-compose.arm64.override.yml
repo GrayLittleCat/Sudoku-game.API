@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: robocoool/sudoku-game-arm64
+    env_file:
+      - /Users/sergei_burov/Projects/Secrets/.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5091
+    ports:
+      - "5091:5091"

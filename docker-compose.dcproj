@@ -13,7 +13,11 @@
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
+    <None Include="docker-compose.arm64.override.yml">
+      <DependentUpon>docker-compose.arm64.yml</DependentUpon>
+    </None>
     <None Include="docker-compose.yml" />
+    <None Include="docker-compose.arm64.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>
