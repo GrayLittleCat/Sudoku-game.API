@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Players.Register;
 
-internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPlayerCommand, int>
+internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPlayerCommand, PlayerResponse>
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IPlayerRepository _playerRepository;
@@ -22,12 +22,12 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
         _authenticationService = authenticationService;
     }
 
-    public async Task<Result<int>> Handle(RegisterPlayerCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PlayerResponse>> Handle(RegisterPlayerCommand request, CancellationToken cancellationToken)
     {
         var playerEmail = Email.Create(request.Email);
         if (playerEmail.IsFailure)
         {
-            return Result.Failure<int>(EmailErrors.InvalidFormat);
+            return Result.Failure<PlayerResponse>(EmailErrors.InvalidFormat);
         }
 
         var authResponse = await _authenticationService.RegisterAsync(
@@ -35,7 +35,7 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
 
         if (authResponse.IsFailure)
         {
-            return Result.Failure<int>(authResponse.Error);
+            return Result.Failure<PlayerResponse>(authResponse.Error);
         }
 
         var player = new Player(
@@ -47,6 +47,14 @@ internal sealed class RegisterPlayerCommandHandler : ICommandHandler<RegisterPla
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return player.Id;
+        var playerResponse = new PlayerResponse
+        {
+            Id = player.Id,
+            Name = player.Nickname.Value,
+            Email = player.Email.Value,
+            IdentityId = player.IdentityId
+        };
+
+        return playerResponse;
     }
 }
