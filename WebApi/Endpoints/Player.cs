@@ -41,7 +41,7 @@ public sealed class Player : ICarterModule
             return TypedResults.BadRequest(response.Error.Description);
         }
 
-        return TypedResults.Ok();
+        return TypedResults.Ok(response.Value);
     }
 
     private static async Task<IResult> LoginCommand(
