@@ -30,4 +30,4 @@ jobs:
           file: WebApi/Dockerfile
           platforms: linux/arm64
           push: true
-          tags: robocoool/sudoku-game:latest, robocoool/sudoku-game:${{github.run_number}}
+          tags: robocoool/sudoku-game-arm64:latest, robocoool/sudoku-game-arm64:${{github.run_number}}
