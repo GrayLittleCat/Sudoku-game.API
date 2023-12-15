@@ -6,8 +6,7 @@ services:
     build:
       context: .
       platforms:
-        #- "linux/arm64"
-        - "linux/amd64"
+        - "linux/arm64"
       dockerfile: WebApi/Dockerfile
       target: final
       
