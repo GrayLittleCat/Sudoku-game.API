@@ -28,6 +28,6 @@ jobs:
         with:
           context: .
           file: WebApi/Dockerfile
-          platforms: linux/arm64
+          platforms: linux/amd64
           push: true
           tags: user/app:latest
