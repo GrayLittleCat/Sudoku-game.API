@@ -11,6 +11,7 @@ using Infrastructure.Levels;
 using Infrastructure.Players;
 using Infrastructure.PlayerScores;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,5 +82,8 @@ public static class DependencyInjection
                 jwtOptions.Audience = authAudience;
                 jwtOptions.TokenValidationParameters.ValidIssuer = authValidIssuer;
             });
+
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationProvider>();
     }
 }
