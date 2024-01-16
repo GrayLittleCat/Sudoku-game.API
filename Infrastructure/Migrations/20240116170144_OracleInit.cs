@@ -26,7 +26,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PERMISSION",
+                name: "PERMISSIONS",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
@@ -35,7 +35,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PERMISSION", x => x.ID);
+                    table.PrimaryKey("PK_PERMISSIONS", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,7 +54,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ROLE",
+                name: "ROLES",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
@@ -63,7 +63,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ROLE", x => x.ID);
+                    table.PrimaryKey("PK_ROLES", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,7 +94,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PLAYER_ROLE",
+                name: "PLAYER_ROLES",
                 columns: table => new
                 {
                     PLAYER_ID = table.Column<int>(type: "NUMBER(10)", nullable: false),
@@ -102,23 +102,23 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PLAYER_ROLE", x => new { x.PLAYER_ID, x.ROLE_ID });
+                    table.PrimaryKey("PK_PLAYER_ROLES", x => new { x.PLAYER_ID, x.ROLE_ID });
                     table.ForeignKey(
-                        name: "FK_PLAYER_ROLE_PLAYERS_PLAYER_ID",
+                        name: "FK_PLAYER_ROLES_PLAYERS_PLAYER_ID",
                         column: x => x.PLAYER_ID,
                         principalTable: "PLAYERS",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PLAYER_ROLE_ROLE_ROLE_ID",
+                        name: "FK_PLAYER_ROLES_ROLES_ROLE_ID",
                         column: x => x.ROLE_ID,
-                        principalTable: "ROLE",
+                        principalTable: "ROLES",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ROLE_PERMISSION",
+                name: "ROLE_PERMISSIONS",
                 columns: table => new
                 {
                     ROLE_ID = table.Column<int>(type: "NUMBER(10)", nullable: false),
@@ -126,17 +126,17 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ROLE_PERMISSION", x => new { x.ROLE_ID, x.PERMISSION_ID });
+                    table.PrimaryKey("PK_ROLE_PERMISSIONS", x => new { x.ROLE_ID, x.PERMISSION_ID });
                     table.ForeignKey(
-                        name: "FK_ROLE_PERMISSION_PERMISSION_PERMISSION_ID",
+                        name: "FK_ROLE_PERMISSIONS_PERMISSIONS_PERMISSION_ID",
                         column: x => x.PERMISSION_ID,
-                        principalTable: "PERMISSION",
+                        principalTable: "PERMISSIONS",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ROLE_PERMISSION_ROLE_ROLE_ID",
+                        name: "FK_ROLE_PERMISSIONS_ROLES_ROLE_ID",
                         column: x => x.ROLE_ID,
-                        principalTable: "ROLE",
+                        principalTable: "ROLES",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -152,7 +152,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "PERMISSION",
+                table: "PERMISSIONS",
                 columns: new[] { "ID", "NAME" },
                 values: new object[,]
                 {
@@ -161,12 +161,12 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ROLE",
+                table: "ROLES",
                 columns: new[] { "ID", "NAME" },
                 values: new object[] { 1, "Registered" });
 
             migrationBuilder.InsertData(
-                table: "ROLE_PERMISSION",
+                table: "ROLE_PERMISSIONS",
                 columns: new[] { "PERMISSION_ID", "ROLE_ID" },
                 values: new object[,]
                 {
@@ -193,8 +193,8 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PLAYER_ROLE_ROLE_ID",
-                table: "PLAYER_ROLE",
+                name: "IX_PLAYER_ROLES_ROLE_ID",
+                table: "PLAYER_ROLES",
                 column: "ROLE_ID");
 
             migrationBuilder.CreateIndex(
@@ -209,8 +209,8 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ROLE_PERMISSION_PERMISSION_ID",
-                table: "ROLE_PERMISSION",
+                name: "IX_ROLE_PERMISSIONS_PERMISSION_ID",
+                table: "ROLE_PERMISSIONS",
                 column: "PERMISSION_ID");
         }
 
@@ -218,13 +218,13 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PLAYER_ROLE");
+                name: "PLAYER_ROLES");
 
             migrationBuilder.DropTable(
                 name: "PLAYER_SCORES");
 
             migrationBuilder.DropTable(
-                name: "ROLE_PERMISSION");
+                name: "ROLE_PERMISSIONS");
 
             migrationBuilder.DropTable(
                 name: "LEVELS");
@@ -233,10 +233,10 @@ namespace Infrastructure.Migrations
                 name: "PLAYERS");
 
             migrationBuilder.DropTable(
-                name: "PERMISSION");
+                name: "PERMISSIONS");
 
             migrationBuilder.DropTable(
-                name: "ROLE");
+                name: "ROLES");
         }
     }
 }

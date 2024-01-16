@@ -25,7 +25,8 @@ public sealed class Player : ICarterModule
 
         group.MapGet("{playerId}", GetPlayerById).WithName(nameof(GetPlayerById));
         group.MapPut("{playerId}/change-password", ChangePasswordCommand).WithName(nameof(ChangePasswordCommand));
-        group.MapDelete("{playerId}", DeleteCommand).WithName(nameof(DeleteCommand));
+        group.MapDelete("{playerId}", DeleteCommand).WithName(nameof(DeleteCommand))
+            .RequireAuthorization(new HasPermissionAttribute(Permission.UpdateMember));
     }
 
     private static async Task<IResult> RegisterPlayerCommand(

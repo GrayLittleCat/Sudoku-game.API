@@ -11,7 +11,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240115170344_OracleInit")]
+    [Migration("20240116170144_OracleInit")]
     partial class OracleInit
     {
         /// <inheritdoc />
@@ -83,9 +83,9 @@ namespace Infrastructure.Migrations
                         .HasColumnName("NAME");
 
                     b.HasKey("Id")
-                        .HasName("PK_PERMISSION");
+                        .HasName("PK_PERMISSIONS");
 
-                    b.ToTable("PERMISSION", (string)null);
+                    b.ToTable("PERMISSIONS", (string)null);
 
                     b.HasData(
                         new
@@ -111,12 +111,12 @@ namespace Infrastructure.Migrations
                         .HasColumnName("ROLE_ID");
 
                     b.HasKey("PlayerId", "RoleId")
-                        .HasName("PK_PLAYER_ROLE");
+                        .HasName("PK_PLAYER_ROLES");
 
                     b.HasIndex("RoleId")
-                        .HasDatabaseName("IX_PLAYER_ROLE_ROLE_ID");
+                        .HasDatabaseName("IX_PLAYER_ROLES_ROLE_ID");
 
-                    b.ToTable("PLAYER_ROLE", (string)null);
+                    b.ToTable("PLAYER_ROLES", (string)null);
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>
@@ -189,12 +189,12 @@ namespace Infrastructure.Migrations
                         .HasColumnName("PERMISSION_ID");
 
                     b.HasKey("RoleId", "PermissionId")
-                        .HasName("PK_ROLE_PERMISSION");
+                        .HasName("PK_ROLE_PERMISSIONS");
 
                     b.HasIndex("PermissionId")
-                        .HasDatabaseName("IX_ROLE_PERMISSION_PERMISSION_ID");
+                        .HasDatabaseName("IX_ROLE_PERMISSIONS_PERMISSION_ID");
 
-                    b.ToTable("ROLE_PERMISSION", (string)null);
+                    b.ToTable("ROLE_PERMISSIONS", (string)null);
 
                     b.HasData(
                         new
@@ -224,9 +224,9 @@ namespace Infrastructure.Migrations
                         .HasColumnName("NAME");
 
                     b.HasKey("Id")
-                        .HasName("PK_ROLE");
+                        .HasName("PK_ROLES");
 
-                    b.ToTable("ROLE", (string)null);
+                    b.ToTable("ROLES", (string)null);
 
                     b.HasData(
                         new
@@ -243,14 +243,14 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_PLAYER_ROLE_PLAYERS_PLAYER_ID");
+                        .HasConstraintName("FK_PLAYER_ROLES_PLAYERS_PLAYER_ID");
 
                     b.HasOne("Domain.Roles.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_PLAYER_ROLE_ROLE_ROLE_ID");
+                        .HasConstraintName("FK_PLAYER_ROLES_ROLES_ROLE_ID");
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>
@@ -332,14 +332,14 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_ROLE_PERMISSION_PERMISSION_PERMISSION_ID");
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_PERMISSIONS_PERMISSION_ID");
 
                     b.HasOne("Domain.Roles.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_ROLE_PERMISSION_ROLE_ROLE_ID");
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_ROLES_ROLE_ID");
                 });
 #pragma warning restore 612, 618
         }

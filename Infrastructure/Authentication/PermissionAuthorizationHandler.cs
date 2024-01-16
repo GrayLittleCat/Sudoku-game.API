@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
@@ -16,10 +16,10 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        var playerId = context.User.Claims.FirstOrDefault(
-            x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var identityId = context.User.Claims.FirstOrDefault(
+            x => x.Type == CustomClaims.UserId)?.Value;
 
-        if (!int.TryParse(playerId, out var parsedPlayerId))
+        if (identityId.IsNullOrEmpty())
         {
             return;
         }
@@ -29,7 +29,7 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
         var permissionService = scope.ServiceProvider
             .GetRequiredService<IPermissionService>();
 
-        var permissions = await permissionService.GetPermissionsAsync(parsedPlayerId);
+        var permissions = await permissionService.GetPermissionsAsync(identityId);
 
         if (permissions.Contains(requirement.Permission))
         {

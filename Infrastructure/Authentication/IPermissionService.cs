@@ -2,5 +2,5 @@
 
 public interface IPermissionService
 {
-    Task<HashSet<string>> GetPermissionsAsync(int playerId);
+    Task<HashSet<string>> GetPermissionsAsync(string identityId);
 }

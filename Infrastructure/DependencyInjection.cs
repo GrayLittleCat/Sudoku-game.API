@@ -85,5 +85,6 @@ public static class DependencyInjection
 
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationProvider>();
+        services.AddScoped<IPermissionService, PermissionService>();
     }
 }

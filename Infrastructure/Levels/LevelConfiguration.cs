@@ -8,6 +8,8 @@ internal sealed class LevelConfiguration : IEntityTypeConfiguration<Level>
 {
     public void Configure(EntityTypeBuilder<Level> builder)
     {
+        builder.ToTable(TableNames.Levels);
+
         builder.HasKey(l => l.Id);
         builder.Property(l => l.Id).ValueGeneratedNever();
 

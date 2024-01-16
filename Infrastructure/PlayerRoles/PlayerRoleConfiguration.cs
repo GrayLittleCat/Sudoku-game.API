@@ -8,6 +8,7 @@ public class PlayerRoleConfiguration : IEntityTypeConfiguration<PlayerRole>
 {
     public void Configure(EntityTypeBuilder<PlayerRole> builder)
     {
+        builder.ToTable(TableNames.PlayerRoles);
         builder.HasKey(x => new { x.PlayerId, x.RoleId });
     }
 }

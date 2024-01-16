@@ -1,30 +1,47 @@
-﻿using Domain.Players;
-using Microsoft.EntityFrameworkCore;
+﻿using Application.Abstractions.Data;
+using Dapper;
 
 namespace Infrastructure.Authentication;
 
 public class PermissionService : IPermissionService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public PermissionService(ApplicationDbContext context)
+    public PermissionService(ApplicationDbContext context, IDbConnectionFactory dbConnectionFactory)
     {
-        _context = context;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<HashSet<string>> GetPermissionsAsync(int playerId)
+    public async Task<HashSet<string>> GetPermissionsAsync(string identityId)
     {
-        var roles = await _context.Set<Player>()
-            .Include(x => x.Roles)
-            .ThenInclude(x => x.Permissions)
-            .Where(x => x.Id == playerId)
-            .Select(x => x.Roles)
-            .ToArrayAsync();
+        using var connection = _dbConnectionFactory.CreateOpenConnection();
 
-        return roles
-            .SelectMany(x => x)
-            .SelectMany(x => x.Permissions)
-            .Select(x => x.Name)
-            .ToHashSet();
+        const string sql =
+            """
+            SELECT rp.PERMISSION_ID,
+                   p.ID as player_id,
+                   pr.ROLE_ID,
+                   per.NAME as permission_name
+              FROM PLAYER_ROLES pr
+              JOIN PLAYERS p
+                ON pr.PLAYER_ID = p.ID
+              JOIN ROLE_PERMISSIONS rp
+                ON rp.ROLE_ID = pr.ROLE_ID
+              JOIN PERMISSIONS per
+                ON rp.PERMISSION_ID = per.ID
+             WHERE p.IDENTITY_ID = :IdentityId
+            """;
+
+        var param = new DynamicParameters();
+
+        param.Add("IdentityId", identityId);
+
+        var resultSet =
+            await connection
+                .QueryAsync<(int permissionId, int playerId, int roleId, string permissionName)>(sql, param);
+
+        var ret = resultSet.Select(x => x.permissionName).ToHashSet();
+
+        return ret;
     }
 }
