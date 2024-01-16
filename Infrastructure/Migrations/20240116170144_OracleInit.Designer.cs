@@ -11,7 +11,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231207161415_OracleInit")]
+    [Migration("20240116170144_OracleInit")]
     partial class OracleInit
     {
         /// <inheritdoc />
@@ -66,6 +66,57 @@ namespace Infrastructure.Migrations
                             Id = 3,
                             Name = "Hard"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Permissions.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasColumnName("NAME");
+
+                    b.HasKey("Id")
+                        .HasName("PK_PERMISSIONS");
+
+                    b.ToTable("PERMISSIONS", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "ReadMember"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "UpdateMember"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.PlayerRoles.PlayerRole", b =>
+                {
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("PLAYER_ID");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_ID");
+
+                    b.HasKey("PlayerId", "RoleId")
+                        .HasName("PK_PLAYER_ROLES");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("IX_PLAYER_ROLES_ROLE_ID");
+
+                    b.ToTable("PLAYER_ROLES", (string)null);
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>
@@ -125,6 +176,81 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("IX_PLAYERS_IDENTITY_ID");
 
                     b.ToTable("PLAYERS", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.RolePermissions.RolePermission", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_ID");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("PERMISSION_ID");
+
+                    b.HasKey("RoleId", "PermissionId")
+                        .HasName("PK_ROLE_PERMISSIONS");
+
+                    b.HasIndex("PermissionId")
+                        .HasDatabaseName("IX_ROLE_PERMISSIONS_PERMISSION_ID");
+
+                    b.ToTable("ROLE_PERMISSIONS", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 2
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Roles.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasColumnName("NAME");
+
+                    b.HasKey("Id")
+                        .HasName("PK_ROLES");
+
+                    b.ToTable("ROLES", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Registered"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.PlayerRoles.PlayerRole", b =>
+                {
+                    b.HasOne("Domain.Players.Player", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PLAYER_ROLES_PLAYERS_PLAYER_ID");
+
+                    b.HasOne("Domain.Roles.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PLAYER_ROLES_ROLES_ROLE_ID");
                 });
 
             modelBuilder.Entity("Domain.PlayerScores.PlayerScore", b =>
@@ -197,6 +323,23 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Nickname")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.RolePermissions.RolePermission", b =>
+                {
+                    b.HasOne("Domain.Permissions.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_PERMISSIONS_PERMISSION_ID");
+
+                    b.HasOne("Domain.Roles.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_ROLES_ROLE_ID");
                 });
 #pragma warning restore 612, 618
         }

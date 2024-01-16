@@ -1,4 +1,4 @@
-﻿
+﻿using Domain.Roles;
 using SharedKernel;
 
 namespace Domain.Players;
@@ -11,11 +11,13 @@ public sealed class Player : Entity
         Nickname = nickname;
         IdentityId = identityId;
     }
-    
+
     //Needed for EF Core
     private Player()
     {
     }
+
+    public ICollection<Role> Roles { get; set; }
 
     public Email Email { get; private set; }
 

@@ -6,6 +6,7 @@ using Application.PlayerScores.GetByLevelId;
 using Application.PlayerScores.GetByPlayerId;
 using Application.PlayerScores.Update;
 using Carter;
+using Infrastructure.Authentication;
 using MediatR;
 
 namespace WebApi.Endpoints;
@@ -15,18 +16,21 @@ public sealed class PlayerScore : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("api/player-scores")
-            .RequireAuthorization();
+            .RequireAuthorization(new HasPermissionAttribute(Permission.ReadMember));
 
         group.MapGet("", GetPlayerScores).WithName(nameof(GetPlayerScores));
         group.MapGet("{id}", GetPlayerScoreById).WithName(nameof(GetPlayerScoreById));
         group.MapGet("player/{playerId}", GetPlayerScoreByPlayerId).WithName(nameof(GetPlayerScoreByPlayerId));
         group.MapGet("level/{levelId}", GetPlayerScoreByLevelId).WithName(nameof(GetPlayerScoreByLevelId));
 
-        group.MapPost("", CreatePlayerScore);
+        group.MapPost("", CreatePlayerScore).WithName(nameof(CreatePlayerScore))
+            .RequireAuthorization(new HasPermissionAttribute(Permission.UpdateMember));
 
-        group.MapPut("{id}", UpdatePlayerScore).WithName(nameof(UpdatePlayerScore));
+        group.MapPut("{id}", UpdatePlayerScore).WithName(nameof(UpdatePlayerScore))
+            .RequireAuthorization(new HasPermissionAttribute(Permission.UpdateMember));
 
-        group.MapDelete("{id}", DeletePlayerScore).WithName(nameof(DeletePlayerScore));
+        group.MapDelete("{id}", DeletePlayerScore).WithName(nameof(DeletePlayerScore))
+            .RequireAuthorization(new HasPermissionAttribute(Permission.UpdateMember));
     }
 
     private static async Task<IResult> CreatePlayerScore(

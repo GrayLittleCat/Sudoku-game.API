@@ -6,6 +6,7 @@ using Application.Players.Login;
 using Application.Players.Register;
 using Carter;
 using Domain.Players;
+using Infrastructure.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -19,11 +20,13 @@ public sealed class Player : ICarterModule
 
         app.MapPost("login", LoginCommand);
 
-        var group = app.MapGroup("api/player").RequireAuthorization();
+        var group = app.MapGroup("api/player")
+            .RequireAuthorization(new HasPermissionAttribute(Permission.ReadMember));
 
         group.MapGet("{playerId}", GetPlayerById).WithName(nameof(GetPlayerById));
         group.MapPut("{playerId}/change-password", ChangePasswordCommand).WithName(nameof(ChangePasswordCommand));
-        group.MapDelete("{playerId}", DeleteCommand).WithName(nameof(DeleteCommand));
+        group.MapDelete("{playerId}", DeleteCommand).WithName(nameof(DeleteCommand))
+            .RequireAuthorization(new HasPermissionAttribute(Permission.UpdateMember));
     }
 
     private static async Task<IResult> RegisterPlayerCommand(

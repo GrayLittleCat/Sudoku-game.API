@@ -10,6 +10,8 @@ internal sealed class PlayerScoreConfiguration : IEntityTypeConfiguration<Player
 {
     public void Configure(EntityTypeBuilder<PlayerScore> builder)
     {
+        builder.ToTable(TableNames.PlayerScores);
+
         builder.HasKey(p => p.Id);
 
         builder.HasOne<Player>()
