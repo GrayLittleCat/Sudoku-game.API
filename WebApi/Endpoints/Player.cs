@@ -58,7 +58,7 @@ public sealed class Player : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return HandleFailure(response);
         }
 
         return Results.Ok(response.Value);
@@ -70,7 +70,7 @@ public sealed class Player : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return HandleFailure(response);
         }
 
         return TypedResults.Ok();
@@ -85,7 +85,7 @@ public sealed class Player : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return HandleFailure(response);
         }
 
         return TypedResults.Ok();
