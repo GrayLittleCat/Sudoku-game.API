@@ -9,6 +9,8 @@ using Domain.Players;
 using Infrastructure.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using SharedKernel;
 
 namespace WebApi.Endpoints;
 
@@ -42,7 +44,7 @@ public sealed class Player : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return HandleFailure(response);
         }
 
         return TypedResults.Ok(response.Value);
@@ -105,5 +107,41 @@ public sealed class Player : ICarterModule
         }
 
         return TypedResults.Ok(playerResponse.Value);
+    }
+
+    private static IResult HandleFailure(Result result)
+    {
+        return result switch
+        {
+            { IsSuccess: true } => throw new InvalidOperationException(),
+            IValidationResult validationResult =>
+                TypedResults.BadRequest(
+                    CreateProblemDetails(
+                        "Validation Error", StatusCodes.Status400BadRequest,
+                        result.Error,
+                        validationResult.Errors)),
+            _ =>
+                TypedResults.BadRequest(
+                    CreateProblemDetails(
+                        "Bad Request",
+                        StatusCodes.Status400BadRequest,
+                        result.Error))
+        };
+    }
+
+    private static ProblemDetails CreateProblemDetails(
+        string title,
+        int status,
+        Error error,
+        Error[]? errors = null)
+    {
+        return new ProblemDetails
+        {
+            Title = title,
+            Type = error.Code,
+            Detail = error.Description,
+            Status = status,
+            Extensions = { { nameof(errors), errors } }
+        };
     }
 }
