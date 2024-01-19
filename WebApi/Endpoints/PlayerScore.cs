@@ -8,6 +8,7 @@ using Application.PlayerScores.Update;
 using Carter;
 using Infrastructure.Authentication;
 using MediatR;
+using WebApi.Extensions;
 
 namespace WebApi.Endpoints;
 
@@ -46,7 +47,7 @@ public sealed class PlayerScore : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok();
@@ -61,7 +62,7 @@ public sealed class PlayerScore : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok();
@@ -73,7 +74,7 @@ public sealed class PlayerScore : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return TypedResults.BadRequest(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok();
@@ -87,7 +88,7 @@ public sealed class PlayerScore : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.NotFound(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok(response.Value);
@@ -101,7 +102,7 @@ public sealed class PlayerScore : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.NotFound(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok(response.Value);
@@ -115,7 +116,7 @@ public sealed class PlayerScore : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.NotFound(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok(response.Value);
@@ -132,7 +133,7 @@ public sealed class PlayerScore : ICarterModule
 
         if (response.IsFailure)
         {
-            return TypedResults.NotFound(response.Error.Description);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok(response.Value);

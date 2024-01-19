@@ -32,7 +32,7 @@ public class ValidationBehavior<TRequest, TResponse>
         var errors = validationFailures
             .SelectMany(validationResult => validationResult.Errors)
             .Where(validationFailure => validationFailure is not null)
-            .Select(failure => new Error(
+            .Select(failure => Error.Validation(
                 failure.PropertyName,
                 failure.ErrorMessage))
             .Distinct()

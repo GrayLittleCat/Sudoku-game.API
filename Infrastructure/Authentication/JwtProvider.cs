@@ -27,7 +27,7 @@ internal sealed class JwtProvider : IJwtProvider
 
         if (!response.IsSuccessStatusCode)
         {
-            return Result.Failure<string>(new Error("Authentication.InvalidCredentials", "Invalid credentials"));
+            return Result.Failure<string>(Error.Failure("Authentication.InvalidCredentials", "Invalid credentials"));
         }
 
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();

@@ -33,7 +33,7 @@ internal sealed class DeletePlayerCommandHandler : ICommandHandler<DeletePlayerC
         var result = await _authenticationService.DeleteAsync(player.IdentityId);
         if (result.IsFailure)
         {
-            return result.Error.ToResult();
+            return result;
         }
 
         _playerRepository.Delete(player);

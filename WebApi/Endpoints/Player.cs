@@ -1,16 +1,12 @@
-﻿using Application.Players;
-using Application.Players.ChangePassword;
+﻿using Application.Players.ChangePassword;
 using Application.Players.Delete;
 using Application.Players.GetById;
 using Application.Players.Login;
 using Application.Players.Register;
 using Carter;
-using Domain.Players;
 using Infrastructure.Authentication;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using SharedKernel;
+using WebApi.Extensions;
 
 namespace WebApi.Endpoints;
 
@@ -44,7 +40,7 @@ public sealed class Player : ICarterModule
 
         if (response.IsFailure)
         {
-            return HandleFailure(response);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok(response.Value);
@@ -58,7 +54,7 @@ public sealed class Player : ICarterModule
 
         if (response.IsFailure)
         {
-            return HandleFailure(response);
+            return response.HandleFailure();
         }
 
         return Results.Ok(response.Value);
@@ -70,7 +66,7 @@ public sealed class Player : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return HandleFailure(response);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok();
@@ -85,63 +81,22 @@ public sealed class Player : ICarterModule
         var response = await sender.Send(command);
         if (response.IsFailure)
         {
-            return HandleFailure(response);
+            return response.HandleFailure();
         }
 
         return TypedResults.Ok();
     }
 
-    private static async Task<Results<Ok<PlayerResponse>, NotFound<string>, BadRequest<string>>> GetPlayerById(
+    private static async Task<IResult> GetPlayerById(
         int playerId, ISender sender)
     {
         var playerResponse = await sender.Send(new GetPlayerByIdQuery(playerId));
 
         if (playerResponse.IsFailure)
         {
-            if (playerResponse.Error == PlayerErrors.NotFound(playerId))
-            {
-                return TypedResults.NotFound(playerResponse.Error.Description);
-            }
-
-            return TypedResults.BadRequest(playerResponse.Error.Description);
+            return playerResponse.HandleFailure();
         }
 
         return TypedResults.Ok(playerResponse.Value);
-    }
-
-    private static IResult HandleFailure(Result result)
-    {
-        return result switch
-        {
-            { IsSuccess: true } => throw new InvalidOperationException(),
-            IValidationResult validationResult =>
-                TypedResults.BadRequest(
-                    CreateProblemDetails(
-                        "Validation Error", StatusCodes.Status400BadRequest,
-                        result.Error,
-                        validationResult.Errors)),
-            _ =>
-                TypedResults.BadRequest(
-                    CreateProblemDetails(
-                        "Bad Request",
-                        StatusCodes.Status400BadRequest,
-                        result.Error))
-        };
-    }
-
-    private static ProblemDetails CreateProblemDetails(
-        string title,
-        int status,
-        Error error,
-        Error[]? errors = null)
-    {
-        return new ProblemDetails
-        {
-            Title = title,
-            Type = error.Code,
-            Detail = error.Description,
-            Status = status,
-            Extensions = { { nameof(errors), errors } }
-        };
     }
 }

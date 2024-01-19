@@ -2,7 +2,7 @@
 
 public interface IValidationResult
 {
-    public static readonly Error ValidationError = new(
+    public static readonly Error ValidationError = Error.Validation(
         "ValidationError",
         "A validation problem occurred.");
 
