@@ -5,18 +5,18 @@ using SharedKernel;
 
 namespace Application.PlayerScores.Update;
 
-internal sealed class UpdatePlayerScoreHandler : ICommandHandler<UpdatePlayerScore>
+internal sealed class UpdatePlayerScoreCommandHandler : ICommandHandler<UpdatePlayerScoreCommand>
 {
     private readonly IPlayerScoreRepository _playerScoreRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdatePlayerScoreHandler(IUnitOfWork unitOfWork, IPlayerScoreRepository playerScoreRepository)
+    public UpdatePlayerScoreCommandHandler(IUnitOfWork unitOfWork, IPlayerScoreRepository playerScoreRepository)
     {
         _unitOfWork = unitOfWork;
         _playerScoreRepository = playerScoreRepository;
     }
 
-    public async Task<Result> Handle(UpdatePlayerScore request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdatePlayerScoreCommand request, CancellationToken cancellationToken)
     {
         var playerScore = await _playerScoreRepository.GetByIdAsync(request.Id);
 

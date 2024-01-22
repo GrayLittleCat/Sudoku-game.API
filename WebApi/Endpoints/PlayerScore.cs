@@ -58,7 +58,7 @@ public sealed class PlayerScore : ICarterModule
         UpdatePlayerScoreRequest request,
         ISender sender)
     {
-        var command = new UpdatePlayerScore(id, request.Score);
+        var command = new UpdatePlayerScoreCommand(id, request.Score);
         var response = await sender.Send(command);
         if (response.IsFailure)
         {

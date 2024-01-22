@@ -11,13 +11,16 @@ public static class ResultExtensions
             throw new InvalidOperationException();
         }
 
+        var validationResult = result as IValidationResult;
+
         return Results.Problem(
             statusCode: GetStatusCode(result.Error.Type),
             title: GetTitle(result.Error.Type),
             type: GetType(result.Error.Type),
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Error } }
+                { "error", new[] { result.Error } },
+                { "validationErrors", new[] { validationResult?.Errors } }
             });
 
 
