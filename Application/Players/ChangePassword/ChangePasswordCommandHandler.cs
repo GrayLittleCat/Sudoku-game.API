@@ -33,7 +33,7 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
         var result = await _authenticationService.UpdateAsync(player.IdentityId, password: request.NewPassword);
         if (result.IsFailure)
         {
-            return result.Error;
+            return result;
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

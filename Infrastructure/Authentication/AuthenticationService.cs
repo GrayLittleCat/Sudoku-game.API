@@ -22,12 +22,12 @@ internal sealed class AuthenticationService : IAuthenticationService
         }
         catch (FirebaseAuthException e)
         {
-            return Result.Failure<string>(new Error("Authentication.CreateUserFailed",
+            return Result.Failure<string>(Error.Failure("Authentication.CreateUserFailed",
                 e.Message));
         }
         catch (ArgumentException e)
         {
-            return Result.Failure<string>(new Error("Authentication.ArgumentException",
+            return Result.Failure<string>(Error.Failure("Authentication.ArgumentException",
                 e.Message));
         }
     }
@@ -42,11 +42,11 @@ internal sealed class AuthenticationService : IAuthenticationService
         }
         catch (FirebaseAuthException e)
         {
-            return Result.Failure<string>(new Error("Authentication.DeleteUserFailed", e.Message));
+            return Result.Failure<string>(Error.Failure("Authentication.DeleteUserFailed", e.Message));
         }
         catch (ArgumentException e)
         {
-            return Result.Failure<string>(new Error("Authentication.ArgumentException", e.Message));
+            return Result.Failure<string>(Error.Failure("Authentication.ArgumentException", e.Message));
         }
     }
 
@@ -85,11 +85,11 @@ internal sealed class AuthenticationService : IAuthenticationService
         }
         catch (FirebaseAuthException e)
         {
-            return Result.Failure<string>(new Error("Authentication.UpdateUserFailed", e.Message));
+            return Result.Failure<string>(Error.Failure("Authentication.UpdateUserFailed", e.Message));
         }
         catch (ArgumentException e)
         {
-            return Result.Failure<string>(new Error("Authentication.ArgumentException", e.Message));
+            return Result.Failure<string>(Error.Failure("Authentication.ArgumentException", e.Message));
         }
     }
 }

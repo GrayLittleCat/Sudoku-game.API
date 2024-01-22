@@ -8,4 +8,6 @@ public interface IPlayerRepository
 
     void Add(Player player);
     void Delete(Player player);
+    Task<Player?> GetCurrentPlayerAsync();
+    Task<bool> IsCurrentPlayerAsync(int id);
 }
