@@ -2,6 +2,7 @@ using Application;
 using Carter;
 using Infrastructure;
 using Serilog;
+using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,5 +34,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSerilogRequestLogging();
+
+app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.Run();
