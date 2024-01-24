@@ -10,4 +10,15 @@ services:
         - "linux/amd64"
       dockerfile: WebApi/Dockerfile
       target: final
-      
+  
+  seq:
+    image: datalust/seq
+    container_name: seq-logs
+    restart: always
+    volumes:
+      - /logs/docker/seq/data:/data
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:5341"
+      - "8081:80"

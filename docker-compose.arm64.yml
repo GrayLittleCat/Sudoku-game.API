@@ -9,4 +9,12 @@ services:
         - "linux/arm64"
       dockerfile: WebApi/Dockerfile
       target: final
-      
+  
+  seq:
+    image: datalust/seq
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:5341"
+      - "8081:80"
