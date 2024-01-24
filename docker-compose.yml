@@ -13,7 +13,10 @@ services:
   
   seq:
     image: datalust/seq
+    container_name: seq-logs
     restart: always
+    volumes:
+      - /logs/docker/seq/data:/data
     environment:
       - ACCEPT_EULA=Y
     ports:
